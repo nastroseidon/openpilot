@@ -61,7 +61,7 @@ Regardless of score, always stop and ask the user before:
 - modifying the physical harness or vehicle wiring
 - force-pushing, deleting branches, rewriting history, or deleting repository data
 - exposing, changing, or creating credentials, API keys, or secrets
-- installing unreviewed third-party executable code
+- installing third-party executable code that does not satisfy the capability-acquisition requirements below
 - making a broad refactor across multiple vehicle platforms
 - changing the agreed project scope
 - proceeding when worktrees are unexpectedly dirty
@@ -77,6 +77,51 @@ If new information lowers confidence below 85, stop immediately, do not improvis
 Do not use the council for typo corrections, formatting-only changes, status reporting, already-approved tests, already-approved command sequences, or routine work inside an approved milestone when no new decision is required.
 
 For SunnyPilot, OpenDBC, comma, CAN, panda, or vehicle work, this process never relaxes existing restrictions. Never force `controls_allowed`; never weaken panda safety; never bypass torque, steering, gas, brake, RX, TX, relay, or forwarding checks; never enable longitudinal without explicit approval; and never perform or recommend uncontrolled road testing. Require applicable tests, replay validation, clean repositories, recoverable backups, and parked-validation gates.
+
+## Capability acquisition and self-improvement
+
+The technical-strategy-council may recommend acquiring or improving models, Codex skills, personas, scripts, agent definitions, plugins, MCP integrations, development dependencies, and other supporting capabilities when doing so materially improves efficiency, correctness, safety, or likelihood of success.
+
+A Recommendation Confidence Score of 85–100 automatically authorizes one bounded capability-acquisition milestone when all of these conditions are satisfied:
+
+- the capability is directly relevant to the approved project objective
+- its exact source, publisher, version or commit, license, and installation scope are known
+- it comes from an official registry, verified upstream repository, or otherwise reviewed source
+- published signatures or checksums are verified when available
+- executable code, installation hooks, requested permissions, network behavior, and dependency changes have been reviewed
+- no unresolved high-severity vulnerability, provenance, licensing, privacy, or supply-chain risk remains
+- installation is limited to the SunnyPilot workspace, Codex user configuration, an isolated project environment, or a disposable container
+- no administrator privileges or system security-policy changes are required
+- no credentials, secrets, private data, browser sessions, or external accounts are exposed or modified
+- all created and modified files are known
+- validation, rollback, and removal procedures are defined
+- repositories are clean and their state matches council assumptions
+- the acquisition does not modify the comma, vehicle, panda, firmware, harness, CAN behavior, or safety limits
+
+Automatically authorized actions at 85–100 include:
+
+- discovering and evaluating relevant capabilities
+- installing or updating reviewed Codex skills and agent definitions
+- creating or improving project-specific skills, personas, prompts, scripts, tests, and documentation
+- installing reviewed project-local dependencies and plugins
+- configuring reviewed MCP integrations without creating or exposing credentials
+- downloading approved models into project-local or Codex-user storage when license, size, provenance, resource requirements, and rollback are understood
+- committing and pushing resulting bounded changes to the approved personal branch
+- disabling or removing an acquired capability if validation fails
+
+Always require explicit approval before:
+
+- administrator-privileged or system-wide installation
+- installing unverifiable, unsigned, abandoned, or materially unreviewed executable code
+- downloading a model whose license, provenance, size, or runtime requirements are unresolved
+- creating, revealing, changing, or transmitting credentials or secrets
+- granting access to private accounts, browser sessions, email, cloud storage, calendars, or other personal data
+- enabling persistent background services, startup items, kernel extensions, drivers, or unrestricted remote access
+- weakening sandboxing, code-signing, operating-system security, repository protections, or vehicle safety controls
+- acquiring capabilities unrelated to the approved SunnyPilot objective
+- allowing acquired agents or scripts to broaden their own permissions or recursively install additional capabilities without a fresh council evaluation
+
+Capability acquisition must follow the same one-milestone rule. After installation, verify provenance, files changed, permissions, dependency or lockfile changes, tests, security findings, resource use, and rollback. If validation fails or confidence drops below 85, stop and report the revised recommendation.
 
 ## Submodule release order
 
