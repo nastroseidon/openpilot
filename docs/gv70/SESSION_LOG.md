@@ -10,3 +10,11 @@
 - GitHub CLI authentication was invalid during setup.
 
 Future entries should record date/time zone, both SHAs, route IDs, exact commands, test results, deployments, and decisions. Never place credentials or private log data here.
+
+## 2026-07-15 — Controls Mismatch evidence closure continuation
+
+- Verified clean expected branches at SunnyPilot `52b797baa4` and OpenDBC `3c68b2e2`; the parent pointer exactly matched OpenDBC `3c68b2e2`.
+- Determined that the previously unexpected `AGENTS.md` edits had been committed as the confidence-gated policy changes in both repositories; no unexplained worktree changes remained.
+- Accepted the evidence-first milestone's conclusion that the Controls Mismatch root cause is confirmed and `b1867e52` is locally verified but not vehicle-validated.
+- Reconciled the stale RCA and test-plan documentation with the correlated timing/bus evidence, corrected-versus-pre-fix regression, and complete Hyundai CAN-FD test result.
+- Did not contact or modify the comma, deploy, operate the vehicle, change vehicle-support source, or perform replay/vehicle validation.

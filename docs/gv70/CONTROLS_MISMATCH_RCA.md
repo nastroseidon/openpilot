@@ -6,17 +6,24 @@ Local OpenDBC commit `b1867e52` states that the mixed `CANFD_LKA_STEER_MSG | CAM
 
 The commit changes SCC bus selection to prefer bus 1 when `hyundai_canfd_lka_steer_msg` is true and adds `TestHyundaiCanfdLKASteeringCameraSCC` with `PT_BUS = 1` and `SCC_BUS = 1`.
 
-## Hypothesis boundary
+## Evidence closure
 
-That mismatch is a plausible cause of missing cruise-state authorization in panda safety for this flag combination, but the repository contains no timestamped device log proving the complete causal chain. There is not yet documented evidence correlating CarParams flags, received `SCC_CONTROL`, pandaStates/`controlsAllowed`, rejected TX, and user-visible events on the same route.
+The root cause is confirmed for four previously collected failed segments. The evidence-closure milestone correlated:
 
-## Evidence required to close the RCA
+- platform `GENESIS_GV70_2022_2_5T_HDA2`, safety model `hyundaiCanfd`, and `safetyParam = 0x18`;
+- `SCC_CONTROL` (`0x1A0`) received on bus 1 / ECAN and stock LKA steering (`0x50`) on bus 2 / CAM;
+- `controlsAllowed` remaining false;
+- rejected outgoing `0x50` messages beginning 16 ms after `pcmEnable`; and
+- `controlsMismatch` occurring 1.999 seconds after `pcmEnable`, consistent with the 200-cycle mismatch threshold at the 100 Hz controls rate.
 
-1. Capture exact CarParams and safetyParam flags.
-2. Confirm `SCC_CONTROL` address, bus, frequency, and timestamps.
-3. Correlate pandaStates and `controlsAllowed` transitions.
-4. Identify rejected TX and relevant events at the same timestamps.
-5. Run the focused regression and complete Hyundai CAN-FD safety suite.
-6. Perform replay validation using the identified route.
+The complete causal chain is therefore: the pre-fix safety hook selected bus 2 for SCC under the mixed flags, missed valid cruise state on bus 1, left panda authorization false, rejected steering after controls-side enablement, and caused `selfdrived` to raise `controlsMismatch` at its threshold.
 
-Until these are recorded, describe `b1867e52` as a tested code-level correction, not a vehicle-validated resolution.
+## Local correction validation
+
+Commit `b1867e52` is locally verified but not vehicle-validated.
+
+- Corrected focused class: 67 tests passed, including 4 expected capability skips.
+- Pre-fix negative control: 7 predicted authorization-path failures, 56 passes, and 4 expected skips after restoring only the old SCC-bus expression in a disposable copy.
+- Complete Hyundai CAN-FD module: 2,031 tests passed, including 160 expected skips.
+
+No torque limit, longitudinal behavior, forced authorization, or safety bypass changed. The remaining validation gap is replay/post-fix vehicle evidence; no deployment or vehicle validation has occurred. Continue to describe `b1867e52` as a locally verified correction, not a vehicle-validated resolution.
