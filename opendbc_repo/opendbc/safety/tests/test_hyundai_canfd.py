@@ -189,6 +189,25 @@ class TestHyundaiCanfdLKASteeringEV(TestHyundaiCanfdBase):
     self.safety.init_tests()
 
 
+class TestHyundaiCanfdLKASteeringCameraSCC(TestHyundaiCanfdBase):
+
+  TX_MSGS = [[0x50, 0], [0x1CF, 1], [0x2A4, 0]]
+  RELAY_MALFUNCTION_ADDRS = {0: (0x50, 0x2a4)}  # LKAS, CAM_0x2A4
+  FWD_BLACKLISTED_ADDRS = {2: [0x50, 0x2a4]}
+
+  PT_BUS = 1
+  SCC_BUS = 1
+  STEER_MSG = "LKAS"
+  GAS_MSG = ("ACCELERATOR_BRAKE_ALT", "ACCELERATOR_PEDAL_PRESSED")
+
+  def setUp(self):
+    self.packer = CANPackerSafety("hyundai_canfd_generated")
+    self.safety = libsafety_py.libsafety
+    self.safety.set_safety_hooks(CarParams.SafetyModel.hyundaiCanfd,
+                                 HyundaiSafetyFlags.CANFD_LKA_STEER_MSG | HyundaiSafetyFlags.CAMERA_SCC)
+    self.safety.init_tests()
+
+
 # TODO: Handle ICE and HEV configurations once we see cars that use the new messages
 class TestHyundaiCanfdLKASteeringAltEV(TestHyundaiCanfdBase):
 

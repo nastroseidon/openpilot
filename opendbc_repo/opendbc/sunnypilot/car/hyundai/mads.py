@@ -9,6 +9,7 @@ from enum import StrEnum
 from collections import namedtuple
 
 from opendbc.car import Bus, DT_CTRL, structs
+from opendbc.car.hyundai.hyundaicanfd import canfd_camera_scc_uses_ecan
 from opendbc.car.hyundai.values import CAR
 
 from opendbc.car.hyundai.values import HyundaiFlags
@@ -104,5 +105,5 @@ class MadsCarState(MadsCarStateBase):
     cp_cam = can_parsers[Bus.cam]
 
     if not self.CP.openpilotLongitudinalControl:
-      cp_cruise_info = cp_cam if self.CP.flags & HyundaiFlags.CANFD_CAMERA_SCC else cp
+      cp_cruise_info = cp if canfd_camera_scc_uses_ecan(self.CP) else cp_cam if self.CP.flags & HyundaiFlags.CANFD_CAMERA_SCC else cp
       ret.cruiseState.available = cp_cruise_info.vl["SCC_CONTROL"]["MainMode_ACC"] == 1

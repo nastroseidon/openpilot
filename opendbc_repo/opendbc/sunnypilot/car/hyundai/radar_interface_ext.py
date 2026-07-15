@@ -1,6 +1,6 @@
 from opendbc.can.parser import CANParser
 from opendbc.car import structs, Bus
-from opendbc.car.hyundai.hyundaicanfd import CanBus
+from opendbc.car.hyundai.hyundaicanfd import CanBus, canfd_camera_scc_uses_ecan
 from opendbc.car.hyundai.values import DBC, HyundaiFlags
 
 from opendbc.sunnypilot.car.hyundai.escc import EsccRadarInterfaceBase
@@ -34,7 +34,7 @@ class RadarInterfaceExt(EsccRadarInterfaceBase):
       lead_src, bus = "ESCC", 0
     elif self.CP.flags & (HyundaiFlags.CAMERA_SCC | HyundaiFlags.CANFD_CAMERA_SCC):
       lead_src = "SCC_CONTROL" if self.CP.flags & HyundaiFlags.CANFD_CAMERA_SCC else "SCC11"
-      bus = CanBus(self.CP).CAM if self.CP.flags & HyundaiFlags.CANFD_CAMERA_SCC else 2
+      bus = CanBus(self.CP).ECAN if canfd_camera_scc_uses_ecan(self.CP) else CanBus(self.CP).CAM if self.CP.flags & HyundaiFlags.CANFD_CAMERA_SCC else 2
     else:
       return None
 

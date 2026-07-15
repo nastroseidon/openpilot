@@ -1,8 +1,16 @@
 import numpy as np
 from opendbc.car import CanBusBase
 from opendbc.car.crc import CRC16_XMODEM
-from opendbc.car.hyundai.values import HyundaiFlags
+from opendbc.car.hyundai.values import CAR, HyundaiFlags
 from opendbc.sunnypilot.car.hyundai.lead_data_ext import CanFdLeadData
+
+
+def canfd_camera_scc_uses_ecan(CP):
+  return bool(
+    CP.carFingerprint == CAR.GENESIS_GV70_2022_2_5T_HDA2 and
+    CP.flags & HyundaiFlags.CANFD_CAMERA_SCC and
+    CP.flags & HyundaiFlags.CANFD_RADAR_SCC
+  )
 
 
 class CanBus(CanBusBase):

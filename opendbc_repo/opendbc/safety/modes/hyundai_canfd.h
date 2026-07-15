@@ -70,7 +70,7 @@ static uint32_t hyundai_canfd_get_checksum(const CANPacket_t *msg) {
 static void hyundai_canfd_rx_hook(const CANPacket_t *msg) {
 
   const unsigned pt_bus = hyundai_canfd_lka_steer_msg ? 1U : 0U;
-  const unsigned int scc_bus = hyundai_camera_scc ? 2U : pt_bus;
+  const unsigned int scc_bus = hyundai_canfd_lka_steer_msg ? 1U : (hyundai_camera_scc ? 2U : pt_bus);
 
   if (msg->bus == pt_bus) {
     // driver torque
