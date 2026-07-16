@@ -11,6 +11,14 @@
 
 Future entries should record date/time zone, both SHAs, route IDs, exact commands, test results, deployments, and decisions. Never place credentials or private log data here.
 
+## 2026-07-15 — Universal Codex framework adaptation
+
+- Audited the attached universal instructions and bootstrap, both repository instruction layers, repository/tool/Git state, installed skills, and the decision notifier.
+- Adapted the root baseline and OpenDBC overlay from the legacy three-strategy gate to the verified five-member council with continuous independently scored milestones.
+- Preserved all stricter GV70 safety, deployment, longitudinal, panda, test, rollback, and submodule-release restrictions.
+- Verified the global council skill, absence of duplicate skill names and broken skill symlinks, and the executable decision notifier.
+- Did not install capabilities, modify source, commit, push, contact the comma, or deploy.
+
 ## 2026-07-15 — Controls Mismatch evidence closure continuation
 
 - Verified clean expected branches at SunnyPilot `52b797baa4` and OpenDBC `3c68b2e2`; the parent pointer exactly matched OpenDBC `3c68b2e2`.

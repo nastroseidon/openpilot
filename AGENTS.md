@@ -1,4 +1,54 @@
-# SunnyPilot GV70 Project Instructions
+# Universal Codex Baseline with SunnyPilot GV70 Overlay
+
+## Universal baseline
+
+The universal operating model applies throughout this repository. Project and nested instructions may add stricter requirements but may not weaken universal safety, security, privacy, approval, Git, validation, or rollback rules.
+
+Apply instructions in this order: platform/system requirements, the current user request, this root file, applicable nested `AGENTS.md` files, approved specifications and decisions, applicable installed skills, then repository conventions supported by source and tests. Stop and report material conflicts.
+
+Before meaningful work, inspect the applicable instructions, repository structure, manifests and lockfiles, build/test/lint configuration, documentation, CI, branches, remotes, worktrees, submodules, deployment configuration, rollback state, and current failures. Inspect unfamiliar command help instead of guessing.
+
+Use deterministic repository-native terminal workflows. Prefer minimal diffs, one logical change per milestone and commit, test-first changes, systematic root-cause debugging, exact diff review, and explicit residual-risk reporting. Never claim validation that was not run. Do not commit when required validation fails.
+
+Do not commit secrets, modify shell startup files, silently broaden permissions, weaken trust boundaries, or mix unrelated cleanup with requested work. Audit third-party skills, plugins, scripts, dependencies, models, and installers for provenance, license, executable behavior, hooks, network and credential access, destructive actions, telemetry, persistence, permissions, and conflicts before enabling them.
+
+Use containers only when they materially improve reproducibility or isolation. Do not use privileged containers or mount sensitive host paths without explicit approval.
+
+## Continuous milestone execution and reporting
+
+For meaningful decisions use the global `technical-strategy-council` skill with all five permanent voting members:
+
+1. Conservative Systems Engineer
+2. Software and Systems Architect
+3. Product and User Advocate
+4. Quality, Security, and Operations Lead
+5. Adversarial Risk Analyst
+
+Specialist advisors may contribute without replacing or voting for a permanent member. Establish facts, distinguish inferences and unknowns, compare material options, cross-review them, synthesize one bounded milestone, and score that milestone independently.
+
+Continue automatically through consecutive milestones scoring 85 or higher while validation passes, state remains expected, rollback is available, and no mandatory gate applies. Do not stop merely to report success. Maintain a running record and provide one consolidated synopsis at the first legitimate stopping point.
+
+At 70–84, stop before implementation and request a decision. Below 70, do not implement; report the evidence gap and safest diagnostic step. Stop immediately if confidence falls below 85 during execution.
+
+At a genuine user-decision stop, invoke:
+
+```bash
+~/.codex/bin/decision-required \
+  "Codex Decision Required" \
+  "<concise reason user input is required>" \
+  "SunnyPilot GV70" \
+  "<optional local report path>"
+```
+
+Never include phone numbers, account details, credentials, private source, or sensitive logs in notification arguments or repository files. Do not invoke the notifier for routine progress, successful milestones, informational reports, or decisions safely resolved under the autonomy rules.
+
+## Universal mandatory approval gates
+
+Regardless of score, stop before production deployment; destructive production migration; deletion of production or user data; billing, payment, subscription, or financial changes; irreversible external transactions, messages, orders, or submissions; authentication or authorization architecture changes; secret creation, exposure, rotation, transmission, or modification; granting private-account or personal-data access; making private data public; unapproved paid service use; force-pushing or rewriting published history; deleting branches, repositories, releases, or protected tags; merging into a protected production branch; weakening repository, sandbox, signing, or security controls; administrator or system-wide installation; persistent background services, startup items, drivers, kernel extensions, or unrestricted remote access; safety-critical hardware deployment; uncontrolled physical movement; material legal, compliance, privacy, or retention changes; major scope expansion; proceeding after required validation fails or state becomes unexpected; or proceeding without credible rollback.
+
+The project overlay below adds stricter vehicle-specific gates. It never removes a universal gate.
+
+## SunnyPilot GV70 project overlay
 
 ## Scope and repositories
 
@@ -25,7 +75,7 @@
 
 ## Confidence-gated technical decision process
 
-For every meaningful technical decision, use the `technical-strategy-council` skill. The council must generate exactly three genuinely different strategies, cross-review them, score them, synthesize the strongest recommendation, and assign a final **Recommendation Confidence Score** from 0 to 100. The score represents confidence that the recommended next milestone can be executed safely, not merely that its idea is interesting.
+For every meaningful technical decision, use the five-member `technical-strategy-council` process above. Compare genuinely different options when alternatives exist; do not manufacture cosmetic strategies. The final **Recommendation Confidence Score** represents confidence that the next bounded milestone can be executed safely, not enthusiasm for the idea.
 
 The council must identify assumptions, risks, validation gates, rollback, and stop conditions. Calculate the final score with this rubric:
 
@@ -43,7 +93,7 @@ The council must identify assumptions, risks, validation gates, rollback, and st
 
 Do not inflate the score to avoid requesting approval. Apply these thresholds:
 
-- **85–100:** Proceed automatically with one bounded recommended milestone unless a mandatory approval condition applies.
+- **85–100:** Proceed automatically with the bounded recommended milestone and reassess the next milestone unless a mandatory approval condition applies.
 - **70–84:** Stop, present the recommendation and score, explain why it did not reach 85, and ask the user to approve, reject, or revise it.
 - **Below 70:** Do not recommend implementation. Present evidence gaps, unresolved risks, and the safest next diagnostic step for review.
 
@@ -70,7 +120,7 @@ Regardless of score, always stop and ask the user before:
 
 With a score of 85 or higher and no override, the council may proceed automatically with bounded source changes, regression tests, local tests, read-only log analysis, documentation, non-destructive Docker work, ordinary commits on the approved feature branch, ordinary pushes to the approved personal remote, a parent submodule-pointer update after verifying the child commit, or creation/update of a draft pull request.
 
-When proceeding automatically, briefly state the recommendation and score; execute only one bounded milestone; run all required validation; verify repository state afterward; and report files changed, diff summary, commands, tests, commit SHAs, and remaining risks. Run the council again before the next meaningful decision.
+When proceeding automatically, record the recommendation and score, execute only the scored bounded scope, run required validation, verify state afterward, and continue to the next independently scored milestone. Defer the consolidated report until a legitimate stop point.
 
 If new information lowers confidence below 85, stop immediately, do not improvise a larger solution, present the revised council result, and request confirmation.
 
