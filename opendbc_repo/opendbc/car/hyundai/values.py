@@ -615,6 +615,17 @@ class CAR(Platforms):
     CarSpecs(wheelbase=2.87, steerRatio=14.6),
     flags=HyundaiFlags.CANFD_RADAR_SCC,
   )
+  # 2.5T with Highway Driving Assist II. SCC lives in the front radar (0x7d0), not the camera, so this
+  # intentionally does NOT set CANFD_CAMERA_SCC. HDA II / LKA steering (CANFD_LKA_STEER_MSG) is detected at
+  # runtime from 0x50 on the camera bus, same as every other CAN-FD platform. No ADAS DRV ECU (0x730) has been
+  # seen on this trim, so alpha longitudinal stays gated off by the shared logic in interface.py.
+  GENESIS_GV70_2022_2_5T_HDA2 = HyundaiCanFDPlatformConfig(
+    [
+      HyundaiCarDocs("Genesis GV70 (2.5T Trim, with HDA II) 2022", "Highway Driving Assist II", car_parts=CarParts.common([CarHarness.hyundai_p])),
+    ],
+    GENESIS_GV70_1ST_GEN.specs,
+    flags=HyundaiFlags.CANFD_RADAR_SCC,
+  )
   GENESIS_GV70_ELECTRIFIED_1ST_GEN = HyundaiCanFDPlatformConfig(
     [
       HyundaiCarDocs("Genesis GV70 Electrified (Australia Only) 2022", "All", car_parts=CarParts.common([CarHarness.hyundai_q])),
