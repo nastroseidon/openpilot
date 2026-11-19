@@ -188,7 +188,7 @@ class TestHyundaiCanfdLKASteeringLongEV(HyundaiLongitudinalBase, TestHyundaiCanf
 
   SAFETY_PARAM = HyundaiSafetyFlags.CANFD_LKA_STEER_MSG | HyundaiSafetyFlags.LONG | HyundaiSafetyFlags.EV_GAS
 
-  TX_MSGS = [[0x50, 0], [0x1CF, 1], [0x2A4, 0], [0x51, 0], [0x730, 1], [0x12a, 1], [0x160, 1],
+  TX_MSGS = [[0x50, 0], [0x1CF, 1], [0x2A4, 0], [0x51, 0], [0x730, 1], [0x7D0, 1], [0x12a, 1], [0x160, 1],
              [0x1e0, 1], [0x1a0, 1], [0x1ea, 1], [0x200, 1], [0x345, 1], [0x1da, 1]]
 
   RELAY_MALFUNCTION_ADDRS = {0: (0x50, 0x2a4), 1: (0x1a0,)}  # LKAS, CAM_0x2A4, SCC_CONTROL
@@ -210,6 +210,21 @@ class TestHyundaiCanfdLKASteeringLongEV(HyundaiLongitudinalBase, TestHyundaiCanf
   def _tx_acc_state_msg(self, enable):
     values = {"MainMode_ACC": enable}
     return self.packer.make_can_msg_safety("SCC_CONTROL", self.PT_BUS, values)
+class TestHyundaiCanfdLKASteeringLongRadarADASDRV(TestHyundaiCanfdLKASteeringLongEV):
+  """
+    LKA steering cars where the front radar (0x7d0) acts as the ADAS DRV ECU (no ADAS ECU at 0x730),
+    e.g. Genesis GV70 2.5T HDA II. openpilot disables the radar on E-CAN instead of the ADAS ECU.
+  """
+  DISABLED_ECU_UDS_MSG = (0x7D0, 1)
+
+  def test_radar_uds_only_tester_present(self):
+    for dat in (b"\x02\x10\x03\x00\x00\x00\x00\x00",  # diagnostic session control
+                b"\x03\x28\x83\x01\x00\x00\x00\x00",  # communication control
+                b"\x02\x3E\x00\x00\x00\x00\x00\x00"):  # tester present expecting a response
+      self.assertFalse(self._tx(libsafety_py.make_CANPacket(0x7D0, 1, dat)))
+    self.assertFalse(self._tx(libsafety_py.make_CANPacket(0x7D0, 0, b"\x02\x3E\x80\x00\x00\x00\x00\x00")))
+
+
 # Tests longitudinal for ICE, hybrid, EV cars with LFA steering
 class TestHyundaiCanfdLFASteeringLongBase(HyundaiLongitudinalBase, TestHyundaiCanfdLFASteeringBase):
 

@@ -914,6 +914,11 @@ CAN_GEARS = {
 
 CANFD_CAR = CAR.with_flags(HyundaiFlags.CANFD)
 
+# EXPERIMENTAL: HDA II (LKA steering) cars with no separate ADAS DRV ECU at 0x730. On these, the front radar (0x7d0)
+# performs the ADAS DRV role (sends SCC_CONTROL, LFA and the ADRV_* messages on E-CAN), so for openpilot longitudinal
+# the radar is the ECU that is disabled. WARNING: this disables the car's AEB/FCA while openpilot longitudinal is active.
+CANFD_RADAR_ADAS_DRV_CAR = {CAR.GENESIS_GV70_2022_2_5T_HDA2}
+
 CAMERA_SCC_CAR = CAR.with_flags(HyundaiFlags.CAMERA_SCC)
 
 HYBRID_CAR = CAR.with_flags(HyundaiFlags.HYBRID)
