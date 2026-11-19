@@ -800,6 +800,14 @@ HYUNDAI_ECU_MANUFACTURING_DATE = bytes([uds.SERVICE_TYPE.READ_DATA_BY_IDENTIFIER
 
 HYUNDAI_VERSION_RESPONSE = bytes([uds.SERVICE_TYPE.READ_DATA_BY_IDENTIFIER + 0x40])
 
+# Identification-only queries, logged to carFw for ECUs on E-CAN (not used for fingerprinting).
+# Used to identify which ECU performs the ADAS DRV role on HDA II cars without an ADAS ECU at 0x730.
+HYUNDAI_IDENT_REQUESTS = [bytes([uds.SERVICE_TYPE.READ_DATA_BY_IDENTIFIER]) + p16(did) for did in (
+  uds.DATA_IDENTIFIER_TYPE.SYSTEM_NAME_OR_ENGINE_TYPE,
+  uds.DATA_IDENTIFIER_TYPE.SYSTEM_SUPPLIER_IDENTIFIER,
+  uds.DATA_IDENTIFIER_TYPE.VEHICLE_MANUFACTURER_SPARE_PART_NUMBER,
+)]
+
 # Regex patterns for parsing platform code, FW date, and part number from FW versions
 PLATFORM_CODE_FW_PATTERN = re.compile(b'((?<=' + HYUNDAI_VERSION_REQUEST_LONG[1:] +
                                       b')[A-Z]{2}[A-Za-z0-9]{0,2})')
@@ -867,6 +875,13 @@ FW_QUERY_CONFIG = FwQueryConfig(
       logging=True,
       obd_multiplexing=False,
     ),
+    *[Request(
+      [ident_request],
+      [HYUNDAI_VERSION_RESPONSE],
+      bus=1,
+      logging=True,
+      obd_multiplexing=False,
+    ) for ident_request in HYUNDAI_IDENT_REQUESTS],
   ],
   # We lose these ECUs without the comma power on these cars.
   # Note that we still attempt to match with them when they are present
