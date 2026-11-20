@@ -151,6 +151,9 @@ class HyundaiFlags(IntFlag):
 
   HAS_BSM = 2 ** 27  # blind spot monitoring
 
+  # DIAGNOSTIC (GV70 2.5T HDA II experiment): probe the radar disable with a response, stock ACC stays active
+  RADAR_DISABLE_DIAG = 2 ** 28
+
 
 @dataclass
 class HyundaiCarDocs(CarDocs):

@@ -137,6 +137,13 @@ class CarInterface(CarInterfaceBase):
     ret.pcmCruise = not ret.openpilotLongitudinalControl
     ret.longitudinalActuatorDelay = 0.5
 
+    # DIAGNOSTIC ONLY: with the alpha longitudinal toggle on, ask the radar to disable communication and log its
+    # answer, but keep stock ACC and lateral-only safety. openpilot does not emulate the radar/ADAS messages.
+    if candidate in CANFD_RADAR_ADAS_DRV_CAR and ret.openpilotLongitudinalControl:
+      ret.flags |= HyundaiFlags.RADAR_DISABLE_DIAG.value
+      ret.openpilotLongitudinalControl = False
+      ret.pcmCruise = True
+
     if ret.openpilotLongitudinalControl:
       ret.safetyConfigs[-1].safetyParam |= HyundaiSafetyFlags.LONG.value
     if ret.flags & HyundaiFlags.HYBRID:
@@ -236,6 +243,11 @@ class CarInterface(CarInterfaceBase):
     # 0x80 silences response
     if communication_control is None:
       communication_control = bytes([uds.SERVICE_TYPE.COMMUNICATION_CONTROL, 0x80 | uds.CONTROL_TYPE.DISABLE_RX_DISABLE_TX, uds.MESSAGE_TYPE.NORMAL])
+
+    if CP.flags & HyundaiFlags.RADAR_DISABLE_DIAG:
+      # same request without the suppress-response bit, so the radar's positive or negative answer is logged
+      diag_req = bytes([communication_control[0], communication_control[1] & 0x7F, communication_control[2]])
+      disable_ecu(can_recv, can_send, bus=CanBus(CP).ECAN, addr=0x7d0, com_cont_req=diag_req, timeout=0.2)
 
     if CP.openpilotLongitudinalControl and not ((CP.flags & (HyundaiFlags.CANFD_CAMERA_SCC | HyundaiFlags.CAMERA_SCC)) or
                                                 (CP_SP.flags & HyundaiFlagsSP.ENHANCED_SCC)):
