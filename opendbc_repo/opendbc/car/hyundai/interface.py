@@ -1,3 +1,4 @@
+import time
 from opendbc.car import Bus, get_safety_config, structs, uds
 from opendbc.car.hyundai.hyundaicanfd import CanBus
 from opendbc.car.hyundai.values import HyundaiFlags, CAR, DBC, HyundaiSafetyFlags, CANFD_RADAR_ADAS_DRV_CAR
@@ -245,9 +246,15 @@ class CarInterface(CarInterfaceBase):
       communication_control = bytes([uds.SERVICE_TYPE.COMMUNICATION_CONTROL, 0x80 | uds.CONTROL_TYPE.DISABLE_RX_DISABLE_TX, uds.MESSAGE_TYPE.NORMAL])
 
     if CP.flags & HyundaiFlags.RADAR_DISABLE_DIAG:
-      # same request without the suppress-response bit, so the radar's positive or negative answer is logged
+      # DIAGNOSTIC: find which E-CAN ECU sends SCC_CONTROL/LFA/ADRV_*. Each ECU is asked (with a logged response) to
+      # disable communication; it recovers on its own when its diagnostic session times out (~5 s), so probes are
+      # spaced apart. Radar (0x7d0) was already ruled out: it only stops 0x140. Probes: camera, then corner radar master.
       diag_req = bytes([communication_control[0], communication_control[1] & 0x7F, communication_control[2]])
-      disable_ecu(can_recv, can_send, bus=CanBus(CP).ECAN, addr=0x7d0, com_cont_req=diag_req, timeout=0.2)
+      disabling = (communication_control[1] & 0x7F) == uds.CONTROL_TYPE.DISABLE_RX_DISABLE_TX
+      for probe_addr in (0x7c4, 0x7b7):
+        disable_ecu(can_recv, can_send, bus=CanBus(CP).ECAN, addr=probe_addr, com_cont_req=diag_req, timeout=0.2, retry=3)
+        if disabling:
+          time.sleep(8)
 
     if CP.openpilotLongitudinalControl and not ((CP.flags & (HyundaiFlags.CANFD_CAMERA_SCC | HyundaiFlags.CAMERA_SCC)) or
                                                 (CP_SP.flags & HyundaiFlagsSP.ENHANCED_SCC)):
